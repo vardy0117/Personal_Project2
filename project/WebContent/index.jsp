@@ -80,7 +80,7 @@
 					</div>
 			</c:when>
 			<c:otherwise>
-				<a class="btn btn-primary btn-xl js-scroll-trigger" onclick="location.href='board.jsp'">게시판으로 이동</a>
+				<a class="btn btn-primary btn-xl js-scroll-trigger" onclick="location.href='board.do'">게시판으로 이동</a>
 			</c:otherwise>
 		</c:choose>
      

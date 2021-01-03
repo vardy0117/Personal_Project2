@@ -3,6 +3,7 @@ package board;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -36,6 +37,49 @@ public class BoardDAO {
 
 	//----------------------------------------------------------------------------------------------------
 
+	// 모든 게시글의 수
+	public int allBoardCount() {
+		int count = 0;
+		try {
+			getConnection();
+			sql = "select count(*) from board";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				count = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			System.out.println("allBoardCount() 내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		return count;
+	}// allBoardCount() 끝 
+	
+	
+	// 모든 게시글을 보여주는 작업
+	public ArrayList<BoardBean> allBoard(){
+		ArrayList<BoardBean> list = new ArrayList<BoardBean>();
+		try {
+			getConnection();
+			sql="select * from board limit ?,5";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setInt(1, 0);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				BoardBean bBean = new BoardBean(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getDate(6));
+				list.add(bBean);
+			}
+		} catch (Exception e) {
+			System.out.println("allBoard() 내부에서 예외발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		
+		return list;
+	}// allBoard() 끝
+	
+	
 	// 게시글을 작성후 DB에 INSERT하는 작업
 	public int insertBoard(BoardBean bBean) {
 		int result = 0;

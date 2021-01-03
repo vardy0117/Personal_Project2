@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
@@ -139,6 +140,34 @@ public class Controller extends HttpServlet {
 			}
 		} // idCheck 끝
 		
+		// 	게시판으로 이동 버튼을 클릭했을때 board.do를 요청하여 게시판 화면 보여주기
+		if(uri.equals("board")) {
+			System.out.println("게시판으로 이동되었습니다.");
+		
+			// 게시판의 모든 게시글을 보여줄거임
+			ArrayList<BoardBean> list = new ArrayList<BoardBean>();
+			BoardDAO bDAO = new BoardDAO();
+			
+			// 게시글의 수
+			int count = bDAO.allBoardCount();
+			// 게시글
+			list = bDAO.allBoard();
+			// 페이징 처리
+			
+			
+			
+			
+			
+			
+			
+			forward = new ActionForward();
+			forward.setRedirect(false);
+			forward.setNextPath("board.jsp");
+			forward.execute(request, response);
+		}
+		
+		
+		
 		// 글쓰기 버튼을 클릭했을때 이동되는 페이지 (글을 작성할 수 있는 페이지)
 		if(uri.equals("write")) {
 			System.out.println("글쓰러왔음");
@@ -150,24 +179,31 @@ public class Controller extends HttpServlet {
 		
 		// 글을 작성한 후 DB에 INSERT 작업
 		if(uri.equals("writeUpload")) {
+			BoardBean bBean = new BoardBean();
+			BoardDAO bDAO = new BoardDAO();
 			System.out.println("글 작성 후 DB에 업로드한다");
-			
+			int result = 0;
 			
 			String id = (String)session.getAttribute("id");
 			String title = request.getParameter("title");
 			String content = request.getParameter("content");
 			System.out.println(id+","+title+","+content);
 		
-			BoardBean bBean = new BoardBean();
+			System.out.println("44");
 			bBean.setWriter(id);
 			bBean.setTitle(title);
 			bBean.setContent(content);
-			BoardDAO bDAO = new BoardDAO();
-			int result = bDAO.insertBoard(bBean);
-
+			result = bDAO.insertBoard(bBean);
+			System.out.println(1);
+			System.out.println(result + "result");
 			// 게시글 등록이 정상적으로 완료된 경우!!!
 			if(result == 1) {
-				
+				System.out.println("if문 들어옴");
+				request.setCharacterEncoding("utf-8");
+				response.setContentType("text/html; charset=UTF-8");
+				PrintWriter out = response.getWriter();
+				out.print("<script>alert('게시글이 등록되었습니다.'); location.href='board.jsp';</script>");
+				out.flush();
 			}
 		}// writeUpload 끝
 		
