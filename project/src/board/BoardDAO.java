@@ -58,13 +58,16 @@ public class BoardDAO {
 	
 	
 	// 모든 게시글을 보여주는 작업
-	public ArrayList<BoardBean> allBoard(){
+	public ArrayList<BoardBean> allBoard(int startRow,int pageSize){
 		ArrayList<BoardBean> list = new ArrayList<BoardBean>();
 		try {
 			getConnection();
-			sql="select * from board limit ?,5";
+			sql="select * from board order by bno desc limit ?,?";
 			pstmt=con.prepareStatement(sql);
-			pstmt.setInt(1, 0);
+			pstmt.setInt(1, startRow-1);
+			System.out.println("@@@startRow  :"+startRow);
+			pstmt.setInt(2, pageSize);
+			System.out.println("@@@pageSize :"+pageSize);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				BoardBean bBean = new BoardBean(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getDate(6));

@@ -144,27 +144,47 @@ public class Controller extends HttpServlet {
 		if(uri.equals("board")) {
 			System.out.println("게시판으로 이동되었습니다.");
 		
-			// 게시판의 모든 게시글을 보여줄거임
 			ArrayList<BoardBean> list = new ArrayList<BoardBean>();
 			BoardDAO bDAO = new BoardDAO();
-			
+			// ---------------------------------------------------
+			// 페이징 처리
 			// 게시글의 수
 			int count = bDAO.allBoardCount();
+			// 현재 페이지
+			String pageNum = request.getParameter("pageNum");
+			if(pageNum == null) {
+				pageNum = "1";
+			}
+			int currentPage = Integer.parseInt(pageNum);
+			// 한 페이지에 보여줄 게시글 수
+			int pageSize = 5;
+			// 해당 페이지에서 시작할 레코드번호 / 끝 번호
+			int startRow = (currentPage - 1) * pageSize + 1;
+			int endRow = currentPage *pageSize;
+			// 페이징 a태그 개수 구하기
+			int aTag = 0;
+			if(count%pageSize==0) {
+				aTag = count/pageSize;
+			}else {
+				aTag = (count/pageSize)+1;
+			}
+			
+			// 게시판의 모든 게시글을 보여줄거임
 			// 게시글
-			list = bDAO.allBoard();
-			// 페이징 처리
+			list = bDAO.allBoard(startRow,pageSize);
 			
+			// 현재 페이지 번호
 			
-			
-			
-			
-			
-			
+			request.setAttribute("boardList", list);
+			request.setAttribute("startRow", startRow);
+			request.setAttribute("endRow", endRow);
+			request.setAttribute("aTag", aTag);
+			request.setAttribute("pageNum", Integer.parseInt(pageNum));
 			forward = new ActionForward();
 			forward.setRedirect(false);
 			forward.setNextPath("board.jsp");
 			forward.execute(request, response);
-		}
+		} // board 
 		
 		
 		
@@ -202,7 +222,7 @@ public class Controller extends HttpServlet {
 				request.setCharacterEncoding("utf-8");
 				response.setContentType("text/html; charset=UTF-8");
 				PrintWriter out = response.getWriter();
-				out.print("<script>alert('게시글이 등록되었습니다.'); location.href='board.jsp';</script>");
+				out.print("<script>alert('게시글이 등록되었습니다.'); location.href='board.do';</script>");
 				out.flush();
 			}
 		}// writeUpload 끝
