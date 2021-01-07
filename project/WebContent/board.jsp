@@ -52,7 +52,7 @@
 		</thead>
 		<tbody>
 			<c:forEach items="${boardList }" var="boardList" varStatus="i">
-			<tr>
+			<tr onclick="location.href='boardDetail.do?bno=${boardList.bno}&pageNum=${requestScope.pageNum }'">
 				<td>${boardList.bno }</td>
 				<td>${boardList.title }</td>
 				<td>${boardList.writer }</td>

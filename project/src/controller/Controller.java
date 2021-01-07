@@ -15,6 +15,8 @@ import javax.servlet.http.HttpSession;
 import action.ActionForward;
 import board.BoardBean;
 import board.BoardDAO;
+import comment.commentBean;
+import comment.commentDAO;
 import member.MemberBean;
 import member.MemberDAO;
 
@@ -227,8 +229,110 @@ public class Controller extends HttpServlet {
 			}
 		}// writeUpload 끝
 		
+		// 게시글 상세보기
+		if(uri.equals("boardDetail")) {
+			// 게시글 보여주기
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			int pageNum = Integer.parseInt(request.getParameter("pageNum"));
+			BoardDAO bDAO = new BoardDAO();
+			bDAO.plusRead_count(bno);
+			BoardBean bBean = bDAO.boardDatail(bno);
+			request.setAttribute("bno", bno);
+			request.setAttribute("writer", bBean.getWriter());
+			request.setAttribute("title", bBean.getTitle());
+			request.setAttribute("content", bBean.getContent());
+			request.setAttribute("read_count", bBean.getRead_count());
+			request.setAttribute("date", bBean.getDate());
+			request.setAttribute("pageNum", pageNum);
+			
+			// 댓글 보여주기
+			commentDAO cDAO = new commentDAO();
+			ArrayList<commentBean> list = cDAO.allComment(bno);
+			request.setAttribute("commentList", list);
+			
+			forward = new ActionForward();
+			forward.setNextPath("boardDetail.jsp?bno="+bno+"&pageNum="+pageNum);
+			forward.setRedirect(false);
+			forward.execute(request, response);
+		}// boardDetail 끝 
 		
+		// 게시글 삭제
+		if(uri.equals("deleteBoard")) {
+			System.out.println("글 삭제");
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			BoardDAO bDAO = new BoardDAO();
+			bDAO.deleteBoard(bno);
+			forward = new ActionForward();
+			forward.setNextPath("board.do");
+			forward.execute(request, response);
+		}// deleteBoard 끝
 		
+		// 게시글 수정
+		if(uri.equals("updateBoard")) {
+			System.out.println("글 수정");
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			BoardDAO bDAO = new BoardDAO();
+			BoardBean bBean =  bDAO.boardDatail(bno);
+			request.setAttribute("bno", bno);
+			request.setAttribute("writer", bBean.getWriter());
+			request.setAttribute("title", bBean.getTitle());
+			request.setAttribute("content", bBean.getContent());
+			request.setAttribute("read_count", bBean.getRead_count());
+			request.setAttribute("date", bBean.getDate());
+			
+			forward = new ActionForward();
+			forward.setNextPath("updateBoard.jsp?bno="+bno);
+			forward.execute(request, response);
+		}// updateBoard 끝
 		
+		// 게시글 수정Pro
+		if(uri.equals("updateBoardPro")) {
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			BoardDAO bDAO = new BoardDAO();
+			int result = bDAO.updateBoard(title,content,bno);
+			if(result == 1) {
+				forward = new ActionForward();
+				forward.setNextPath("board.do");
+				forward.execute(request, response);
+			}
+		}// updateBoardPro 끝
+		
+		// ajax방식으로 댓글 등록
+		if(uri.equals("uploadComment")) {
+			System.out.println("댓글등록~~");
+			String writer = (String)session.getAttribute("id"); 
+			String comment = request.getParameter("comment");
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			commentDAO cDAO = new commentDAO();
+			int result = cDAO.uploadComment(writer,comment,bno);
+			request.setCharacterEncoding("utf-8");
+			response.setContentType("text/html; charset=UTF-8");
+			if(result == 1) {
+				PrintWriter out = response.getWriter();
+				out.print("ok");
+			}else {
+				PrintWriter out = response.getWriter();
+				out.print("no");
+			}
+		}// uploadComment 끝
+		
+		// ajax 방식으로 댓글 삭제
+		if(uri.equals("deleteComment")) {
+			System.out.println("댓글삭제!!");
+			int cno = Integer.parseInt(request.getParameter("cno"));
+			commentDAO cDAO = new commentDAO();
+			int result = cDAO.deleteComment(cno);
+			request.setCharacterEncoding("utf-8");
+			response.setContentType("text/html; charset=UTF-8");
+			if(result==1) {
+				PrintWriter out = response.getWriter();
+				out.print("delete");
+			}else {
+				PrintWriter out = response.getWriter();
+				out.print("unDelete");
+			}
+		}// deleteComment() 끝
 	}// reqPro 끝
 }// class 끝

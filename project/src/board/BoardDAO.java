@@ -102,6 +102,78 @@ public class BoardDAO {
 		}
 		return result;
 	}// insertBoard() 끝
+
+	// 게시글 하나를 클릭했을때 이동되는 메소드 ( 게시글 bno를 이용하여 게시글의 정보를 보여준다)
+	public BoardBean boardDatail(int bno) {
+		BoardBean bBean = null;
+		try {
+			getConnection();
+			sql = "select * from board where bno=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, bno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				bBean = new BoardBean(bno, rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getDate(6));
+			}
+			
+		} catch (Exception e) {
+			System.out.println("boardDetail() 내부에서 예외 발생 :"+e.toString());
+		} finally {
+			resourceClose();
+		}
+		return bBean;
+	}// boardDetail() 끝
+
+	// 게시글 하나를 클릭했을때 이동되는 메소드 ( 게시글 bno를 이용하여 조회수를 1 증가시켜준다)
+	public void plusRead_count(int bno) {
+		try {
+			getConnection();
+			sql = "update board set read_count=read_count+1 where bno=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, bno);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			System.out.println("plusRead_count() 내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+	} // plusRead_count() 끝
+
+	// 게시글 삭제하기 버튼을 클릭했을때 이동되는 메소드
+	public void deleteBoard(int bno) {
+		try {
+			getConnection();
+			sql="delete from Board where bno=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, bno);
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			System.out.println("deleteBoard() 내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+	}// deleteBoard() 
+
+	// 게시글 수정하기
+	public int updateBoard(String title, String content,int bno) {
+		int result = 0;
+		try {
+			getConnection();
+			sql="update board set title=?,content=? where bno=?";
+			pstmt =con.prepareStatement(sql);
+			pstmt.setString(1, title);
+			pstmt.setString(2, content);
+			pstmt.setInt(3, bno);
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			System.out.println("updateBoard() 내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		return result;
+	}// updateBoard() 끝
+
 	
 	
 	
