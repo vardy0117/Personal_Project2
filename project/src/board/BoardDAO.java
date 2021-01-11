@@ -70,7 +70,7 @@ public class BoardDAO {
 			System.out.println("@@@pageSize :"+pageSize);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				BoardBean bBean = new BoardBean(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getDate(6));
+				BoardBean bBean = new BoardBean(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(6), rs.getDate(7));
 				list.add(bBean);
 			}
 		} catch (Exception e) {
@@ -88,11 +88,12 @@ public class BoardDAO {
 		int result = 0;
 		try {
 			getConnection();
-			sql = "insert into board(writer,title,content) values(?,?,?)";
+			sql = "insert into board(writer,title,content,file) values(?,?,?,?)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, bBean.getWriter());
 			pstmt.setString(2, bBean.getTitle());
 			pstmt.setString(3, bBean.getContent());
+			pstmt.setString(4, bBean.getFile());
 			result = pstmt.executeUpdate();
 			System.out.println("DB에 INSERT 완료!");
 		} catch (Exception e) {
@@ -113,7 +114,7 @@ public class BoardDAO {
 			pstmt.setInt(1, bno);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
-				bBean = new BoardBean(bno, rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getDate(6));
+				bBean = new BoardBean(bno, rs.getString(2), rs.getString(3), rs.getString(4),rs.getString(5), rs.getInt(6), rs.getDate(7));
 			}
 			
 		} catch (Exception e) {

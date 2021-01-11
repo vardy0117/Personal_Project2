@@ -35,7 +35,25 @@ public class MemberDAO {
 	}
 	
 	//----------------------------------------------------------------------------------------------------
-	
+	//Id를 이용하여 회원정보를 보여주는 메소드
+	public MemberBean showMember(String id) {
+		MemberBean mBean = null;
+		try {
+			getConnection();
+			sql="select * from member where id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				mBean = new MemberBean(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+			}
+		} catch (Exception e) {
+			System.out.println("showMember() 내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		return mBean;
+	}// showMember() 끝
 	
 	//로그인 정보를 확인하는 메소드
 	public int login(String id,String pwd) {
@@ -98,5 +116,44 @@ public class MemberDAO {
 		}
 		return result;
 	}// checkId 끝
+
+	// 회원정보 수정하는 메소드
+	public int updateMember(String id, String name, String phone) {
+		int result = 0;
+		try {
+			getConnection();
+			sql="update member set name=?,phone=? where id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, name);
+			pstmt.setString(2, phone);
+			pstmt.setString(3, id);
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			System.out.println("updateMember() 내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		return result;
+	}// updateMember() 끝
+
+	// 회원정보 비밀번호 수정 메소드
+	public int updatePwd(String id, int newPwd) {
+		int result = 0;
+		try {
+			getConnection();
+			sql="update member set pwd=? where id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, newPwd);
+			pstmt.setString(2, id);
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			System.out.println("updatePwd() 내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		return result;
+	}
+
+	
 
 }

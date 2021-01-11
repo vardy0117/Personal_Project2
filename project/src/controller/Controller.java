@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
@@ -11,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import action.ActionForward;
 import board.BoardBean;
@@ -142,6 +146,74 @@ public class Controller extends HttpServlet {
 			}
 		} // idCheck 끝
 		
+		// 회원정보 수정
+		if(uri.equals("modify")) {
+			System.out.println("회원정보 수정");
+			String id = (String)session.getAttribute("id");
+			request.setAttribute("id",id);
+			MemberDAO mDAO = new MemberDAO();
+			MemberBean mBean =  mDAO.showMember(id);
+			request.setAttribute("mBean", mBean);
+			forward = new ActionForward();
+			forward.setNextPath("modify.jsp");
+			forward.execute(request, response);
+		}// modify 끝
+		// modifyPwd ( 회원정보-비밀번호 수정)
+		if(uri.equals("modifyPwd")) {
+			System.out.println("비밀번호 수정");
+			String id = (String)session.getAttribute("id");
+			request.setAttribute("id",id);
+			MemberDAO mDAO = new MemberDAO();
+			MemberBean mBean =  mDAO.showMember(id);
+			request.setAttribute("mBean", mBean);
+			forward = new ActionForward();
+			forward.setNextPath("modifyPwd.jsp");
+			forward.execute(request, response);
+		}
+		// 회원정보 수정 Pro
+		if(uri.equals("modifyPro")) {
+			String id = request.getParameter("id");
+			String name = request.getParameter("name");
+			String phone = request.getParameter("phone");
+			MemberDAO mDAO = new MemberDAO();
+			int result = mDAO.updateMember(id,name,phone);
+			if(result == 1) {
+				System.out.println("result : "+result);
+				forward = new ActionForward();
+				forward.setNextPath("index.jsp");
+				forward.execute(request, response);
+			}
+		}
+		// 회원정보 - 비밀번호 수정 Pro
+		if(uri.equals("modifyPwdPro")) {
+			int oldPwd = Integer.parseInt(request.getParameter("oldPwd"));
+			int newPwd = Integer.parseInt(request.getParameter("newPwd"));
+			int reNewPwd = Integer.parseInt(request.getParameter("reNewPwd"));
+			request.setCharacterEncoding("utf-8");
+			response.setContentType("text/html; charset=UTF-8");
+			// 기존 비밀번호 확인하기
+			String id = (String)session.getAttribute("id");
+			MemberDAO mDAO = new MemberDAO();
+			MemberBean mBean = mDAO.showMember(id);
+			int originPwd = Integer.parseInt(mBean.getPwd());
+			if(oldPwd != originPwd) {
+				PrintWriter out = response.getWriter();
+				out.print("<script>alert('기존의 비밀번호를 확인하세요.'); history.back();</script>");
+			}else {
+				if(newPwd != reNewPwd) {
+					PrintWriter out = response.getWriter();
+					out.print("<script>alert('새로운 비밀번호를 확인하세요.'); history.back();</script>");
+				}else {
+					int result = mDAO.updatePwd(id,newPwd);
+					if(result == 1) {
+						forward = new ActionForward();
+						forward.setNextPath("index.jsp");
+						forward.execute(request, response);
+					}
+				}
+			} // if/else
+		}// modifyPwdPro 끝
+		
 		// 	게시판으로 이동 버튼을 클릭했을때 board.do를 요청하여 게시판 화면 보여주기
 		if(uri.equals("board")) {
 			System.out.println("게시판으로 이동되었습니다.");
@@ -201,32 +273,43 @@ public class Controller extends HttpServlet {
 		
 		// 글을 작성한 후 DB에 INSERT 작업
 		if(uri.equals("writeUpload")) {
-			BoardBean bBean = new BoardBean();
-			BoardDAO bDAO = new BoardDAO();
-			System.out.println("글 작성 후 DB에 업로드한다");
-			int result = 0;
 			
-			String id = (String)session.getAttribute("id");
-			String title = request.getParameter("title");
-			String content = request.getParameter("content");
-			System.out.println(id+","+title+","+content);
-		
-			System.out.println("44");
-			bBean.setWriter(id);
-			bBean.setTitle(title);
-			bBean.setContent(content);
-			result = bDAO.insertBoard(bBean);
-			System.out.println(1);
-			System.out.println(result + "result");
-			// 게시글 등록이 정상적으로 완료된 경우!!!
-			if(result == 1) {
-				System.out.println("if문 들어옴");
-				request.setCharacterEncoding("utf-8");
-				response.setContentType("text/html; charset=UTF-8");
-				PrintWriter out = response.getWriter();
-				out.print("<script>alert('게시글이 등록되었습니다.'); location.href='board.do';</script>");
-				out.flush();
+			// 파일 업로드
+			request.setCharacterEncoding("utf-8");
+			//String uploadPath = getServletContext().getRealPath("upload");
+			String uploadPath = "/Users/leetaewoo/git/repository/project/WebContent/upload";
+			System.out.println(uploadPath);
+			int maxSize = 1024 * 1024 * 1000; 
+			try {
+				MultipartRequest multi = new MultipartRequest(request, uploadPath,maxSize,"utf-8",new DefaultFileRenamePolicy());
+				String id = (String)session.getAttribute("id");
+				String title = multi.getParameter("title");
+				String content = multi.getParameter("content");
+				String file = multi.getFilesystemName("file");
+				
+				System.out.println(id+","+title+","+content+","+file);
+				BoardBean bBean = new BoardBean();
+				BoardDAO bDAO = new BoardDAO();
+				System.out.println("글 작성 후 DB에 업로드한다");
+				bBean.setWriter(id);
+				bBean.setTitle(title);
+				bBean.setContent(content);
+				bBean.setFile(file);
+				int result = 0;
+				result = bDAO.insertBoard(bBean);
+				// 게시글 등록이 정상적으로 완료된 경우!!!
+				if(result == 1) {
+					System.out.println("if문 들어옴");
+					request.setCharacterEncoding("utf-8");
+					response.setContentType("text/html; charset=UTF-8");
+					PrintWriter out = response.getWriter();
+					out.print("<script>alert('게시글이 등록되었습니다.'); location.href='board.do';</script>");
+					out.flush();
+				}
+			} catch (Exception e) {
+				System.out.println("writeUpload() 내에서 예외 발생 : "+e.toString());
 			}
+			
 		}// writeUpload 끝
 		
 		// 게시글 상세보기
@@ -241,10 +324,11 @@ public class Controller extends HttpServlet {
 			request.setAttribute("writer", bBean.getWriter());
 			request.setAttribute("title", bBean.getTitle());
 			request.setAttribute("content", bBean.getContent());
+			request.setAttribute("file", bBean.getFile());
 			request.setAttribute("read_count", bBean.getRead_count());
 			request.setAttribute("date", bBean.getDate());
 			request.setAttribute("pageNum", pageNum);
-			
+			System.out.println("@@@@@@@@@@@@  file : "+bBean.getFile());
 			// 댓글 보여주기
 			commentDAO cDAO = new commentDAO();
 			ArrayList<commentBean> list = cDAO.allComment(bno);

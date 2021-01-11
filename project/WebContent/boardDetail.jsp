@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -62,22 +63,22 @@
 		</tr>
 		<tr>
 			<th>글 내용</th>
-			<td><pre>${content }</pre></td>
+			<td><img src="upload/${file }"> <pre>${content }</pre></td>
 		</tr>
 	</table>
 	<table class="table">
 		<tr>
-			<th colspan="1">댓글</th>
+			<th colspan="1">댓글${fn:length(commentList) }</th>
 		</tr>
 	<c:forEach items="${requestScope.commentList }" var="commentList">
 		<tr>
 			<td style="color: #1d809f; font-size: 1em;" id="commentArea${commentList.cno }">
 			${commentList.writer }
 			&nbsp;<span style="color: gray; font-size: 0.5em;">${commentList.date }</span>
-			&nbsp;<span style="color: #000;">${commentList.comment }</span>
 			<c:if test="${commentList.writer eq sessionScope.id }">
-				<a onclick="deleteComment(${commentList.cno})" style="color: #000; text-decoration: none; font-size: 0.5em;">[삭제]</a>
+				<a onclick="deleteComment(${commentList.cno})" style="color: #000; text-decoration: none; font-size: 0.5em; cursor: pointer;">[삭제]</a>
 			</c:if>
+			&nbsp;<pre><span style="color: #000;">${commentList.comment }</span></pre>
 			</td>
 		</tr>
 	</c:forEach>

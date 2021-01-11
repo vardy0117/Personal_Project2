@@ -35,7 +35,7 @@
 	<a class="logo" href="index.jsp">To Be a Better Programmer</a>
 	<div class="id" style="float: right;">${sessionScope.id }님이 접속중 | <span><a href="logout.do">LOGOUT</a></span></div>
 	<hr>
-	<form action="writeUpload.do" method="post">
+	<form action="writeUpload.do" method="post" enctype="multipart/form-data">
 		<table align="center" class="table">
 			<tbody>
 				<tr>
@@ -49,6 +49,10 @@
 				<tr>
 					<th>글 내용</th>
 					<td><textarea cols="60" rows="10" style="resize: none;" name="content"></textarea></td>
+				</tr>
+				<tr>
+					<th>파일</th>
+					<td><input type="file" name="file"></td>
 				</tr>
 				<tr>
 					<td colspan="2"><input type="submit" value="글쓰기" class="btn" style="border: 1px solid; background: #1d809f; border-color: #1d809f; color: #fff;"></td>

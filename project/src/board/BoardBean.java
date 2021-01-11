@@ -9,6 +9,7 @@ public class BoardBean {
 	private String writer;
 	private String title;
 	private String content;
+	private String file;
 	private int read_count;
 	private Date date;
 	
@@ -19,12 +20,21 @@ public class BoardBean {
 		this.title = title;
 		this.content = content;
 	}
+	
 	public BoardBean(int bno, String writer, String title, String content, int read_count, Date date) {
-		super();
 		this.bno = bno;
 		this.writer = writer;
 		this.title = title;
 		this.content = content;
+		this.read_count = read_count;
+		this.date = date;
+	}
+	public BoardBean(int bno, String writer, String title, String content, String file, int read_count, Date date) {
+		this.bno = bno;
+		this.writer = writer;
+		this.title = title;
+		this.content = content;
+		this.file = file;
 		this.read_count = read_count;
 		this.date = date;
 	}
@@ -64,10 +74,18 @@ public class BoardBean {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	
+	public String getFile() {
+		return file;
+	}
+	public void setFile(String file) {
+		this.file = file;
+	}
 	@Override
 	public String toString() {
-		return "BoardBean [bno=" + bno + ", writer=" + writer + ", title=" + title + ", content=" + content
-				+ ", read_count=" + read_count + ", date=" + date + "]";
+		return "BoardBean [bno=" + bno + ", writer=" + writer + ", title=" + title + ", content=" + content + ", file="
+				+ file + ", read_count=" + read_count + ", date=" + date + "]";
 	}
+
 	
 }

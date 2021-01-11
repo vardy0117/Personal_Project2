@@ -43,9 +43,14 @@
       <li class="sidebar-nav-item">
         <a class="js-scroll-trigger" href="#portfolio">Portfolio</a>
       </li>
-      <li class="sidebar-nav-item">
-        <a class="js-scroll-trigger" href="#contact">Contact</a>
-      </li>
+      <c:if test="${sessionScope.id ne null }">
+	      <li class="sidebar-nav-item">
+	        <a class="js-scroll-trigger" href="modify.do">modify</a>
+	      </li>
+      </c:if>
+<!--       <li class="sidebar-nav-item"> -->
+<!--         <a class="js-scroll-trigger" href="#contact">Contact</a> -->
+<!--       </li> -->
     </ul>
   </nav>
 
@@ -178,7 +183,7 @@
       </div>
       <div class="row no-gutters">
         <div class="col-lg-6">
-          <a class="portfolio-item" href="#!">
+          <a class="portfolio-item" href="pdf/딜리벤져스-ppt.pdf" target="_blank">
             <div class="caption">
               <div class="caption-content">
                 <div class="h2">Dog salon de beaute</div>
@@ -190,7 +195,7 @@
           </a>
         </div>
         <div class="col-lg-6">
-          <a class="portfolio-item" href="#!">
+          <a class="portfolio-item" href="pdf/동물미용-예약-사이트.pdf" target="_blank">
             <div class="caption">
               <div class="caption-content">
                 <div class="h2">Delivengers</div>
@@ -237,13 +242,10 @@
 <!--   </section> -->
 
   <!-- Map -->
-  <div id="contact" class="map">
-    <iframe src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Twitter,+Inc.,+Market+Street,+San+Francisco,+CA&amp;aq=0&amp;oq=twitter&amp;sll=28.659344,-81.187888&amp;sspn=0.128789,0.264187&amp;ie=UTF8&amp;hq=Twitter,+Inc.,+Market+Street,+San+Francisco,+CA&amp;t=m&amp;z=15&amp;iwloc=A&amp;output=embed"></iframe>
-    <br />
-    <small>
-      <a href="https://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=Twitter,+Inc.,+Market+Street,+San+Francisco,+CA&amp;aq=0&amp;oq=twitter&amp;sll=28.659344,-81.187888&amp;sspn=0.128789,0.264187&amp;ie=UTF8&amp;hq=Twitter,+Inc.,+Market+Street,+San+Francisco,+CA&amp;t=m&amp;z=15&amp;iwloc=A"></a>
-    </small>
-  </div>
+<!--   <div id="contact" class="map"> -->
+<!--     <iframe src="pdf/성실함과 꾸준함을 가진 인재입니다._vardy0117.pdf" width="10px"></iframe> -->
+<!--     <br /> -->
+<!--   </div> -->
 
   <!-- Footer -->
   <footer class="footer text-center">
