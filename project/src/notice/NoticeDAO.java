@@ -77,7 +77,7 @@ public class NoticeDAO {
 		return count;
 	}// noticeCount() 끝
 
-	// 공지글을 보여주는 메소드
+	// 모든 공지글을 보여주는 메소드
 	public ArrayList<NoticeBean> allNotice(int startRow) {
 		ArrayList<NoticeBean> noticeList = new ArrayList<NoticeBean>();
 		System.out.println("allNotice 내부에서 startRow 테스트 : "+startRow);
@@ -98,6 +98,26 @@ public class NoticeDAO {
 		}
 		return noticeList;
 	}// allNotice() 끝
+
+	// 공지글 nno번호에 해당하는 공지글을 보여주는 메소드
+	public NoticeBean noticeDetail(int nno) {
+		NoticeBean nBean = null;
+		try {
+			getConnection();
+			sql="select * from notice where nno=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, nno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				nBean = new NoticeBean(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getDate(7));
+			}
+		} catch (Exception e) {
+			System.out.println("noticeDetail() 내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		return nBean;
+	}
 	
 	
 }// class 끝

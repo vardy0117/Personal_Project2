@@ -63,7 +63,7 @@
 		</tr>
 		<tr>
 			<th>글 내용</th>
-			<td><img src="upload/${file }"> <pre>${content }</pre></td>
+			<td><img src="upload/${file }" style="max-width: 700px; max-height: 500px;"> <pre>${content }</pre></td>
 		</tr>
 	</table>
 	<table class="table">

@@ -58,7 +58,7 @@
 				</tr>
 				<tr>
 					<th>파일</th>
-					<td><input type="file" name="file"></td>
+					<td><input type="file" name="file" ></td>
 				</tr>
 				<tr>
 					<td colspan="2"><input type="submit" value="글쓰기" class="btn" style="border: 1px solid; background: #1d809f; border-color: #1d809f; color: #fff;"></td>

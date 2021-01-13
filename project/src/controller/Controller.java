@@ -343,9 +343,15 @@ public class Controller extends HttpServlet {
 			// 시작 번호
 			int startRow = (currentPage - 1) * pageSize + 1;
 			ArrayList<NoticeBean> noticeList = nDAO.allNotice(startRow);
-			
+			int aTag = 0;
+			if(noticeCount%pageSize==0) {
+				aTag = noticeCount/pageSize;
+			}else {
+				aTag=noticeCount/pageSize+1;
+			}
 			request.setAttribute("noticeList", noticeList);
 			request.setAttribute("noticePageNum", currentPage);
+			request.setAttribute("aTag", aTag);
 			forward = new ActionForward();
 			forward.setNextPath("notice.jsp");
 			forward.execute(request, response);
@@ -355,6 +361,10 @@ public class Controller extends HttpServlet {
 		if(uri.equals("noticeDetail")) {
 			int nno = Integer.parseInt(request.getParameter("nno"));
 			int noticePageNum = Integer.parseInt(request.getParameter("noticePageNum"));
+			NoticeDAO nDAO = new NoticeDAO();
+			NoticeBean nBean = nDAO.noticeDetail(nno);
+			request.setAttribute("nBean", nBean);
+			request.setAttribute("noticePageNum", noticePageNum);
 			
 			forward = new ActionForward();
 			forward.setNextPath("noticeDetail.jsp?nno="+nno+"&noticePageNum="+noticePageNum);
@@ -372,9 +382,9 @@ public class Controller extends HttpServlet {
 		if(uri.equals("noticeWriteUpload")) {
 			// 파일 업로드
 			request.setCharacterEncoding("utf-8");
-			//String uploadPath = getServletContext().getRealPath("upload");
+			//String uploadPath = getServletContext().getRealPath("noticeUpload");
 			String uploadPath = "/Users/leetaewoo/git/repository/project/WebContent/noticeUpload";
-			System.out.println(uploadPath);
+			System.out.println("@@@@: "+uploadPath);
 			int maxSize = 1024 * 1024 * 1000; 
 			try {
 				MultipartRequest multi = new MultipartRequest(request, uploadPath,maxSize,"utf-8",new DefaultFileRenamePolicy());

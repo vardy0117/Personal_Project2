@@ -69,7 +69,7 @@
 	<div class="id" style="float: right;">${sessionScope.id }님이 접속중 | <span><a href="logout.do">LOGOUT</a></span> | <span><a href="myPage.do">MYPAGE</a></span></div>
 	<hr>
 	<ul class="boardList">
-		<li><a href="board.do" id="board">일반게시판</a></li>
+		<li><a href="board.do" id="board">자유게시판</a></li>
 		<li><a href="notice.do" id="notice" class="clicked">공지사항</a></li>
 		<li><a href="download.do" id="download">자료실</a></li>
 		<li><a href="youtube.do" id="youtube">유튜브</a></li>
@@ -83,30 +83,40 @@
 				<th>제목</th>
 				<th>작성자</th>
 				<th>날짜</th>
-				<th>조회수</th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach items="${noticeList }" var="noticeList">
 				<tr onclick="location.href='noticeDetail.do?nno=${noticeList.nno}&noticePageNum=${requestScope.noticePageNum }'">
 					<td>${noticeList.nno }</td>
-					<td>${noticeList.title }</td>
+					<td style="color: blue;">${noticeList.title }</td>
 					<td>관리자</td>
 					<td>${noticeList.date }</td>
-					<td>${noticeList.read_count }</td>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
-	
+	<div align="center" class="aTag">
+		<a href="notice.do?noticePageNum=1">[처음]</a>
+		<c:if test="${noticePageNum ne 1 }">
+			<a href="notice.do?noticePageNum=${noticePageNum-1 }">[이전]</a>
+		</c:if>
+		<c:forEach var="i" begin="1" end="${aTag }">
+			<a href="notice.do?noticePageNum=${i }" id="nowPage${i }">${i }</a>
+		</c:forEach>
+		<c:if test="${noticePageNum ne aTag }">
+			<a href="notice.do?noticePageNum=${noticePageNum+1 }">[다음]</a>
+		</c:if>
+		<a href="notice.do?noticePageNum=${aTag}">[끝]</a>
+	</div>
 	<hr>
 	<c:if test="${sessionScope.id eq 'admin' }">
 		<a class="btn" style="border: 1px solid; background: #1d809f; border-color: #1d809f; color: #fff;" href="noticeWrite.do">글쓰기</a>
 	</c:if>
 	<script type="text/javascript">
-		var pageNum = ${pageNum};
-		document.getElementById("nowPage"+pageNum).style.background="black";
-		document.getElementById("nowPage"+pageNum).style.color="#fff";
+		var noticePageNum = ${noticePageNum};
+		document.getElementById("nowPage"+noticePageNum).style.background="black";
+		document.getElementById("nowPage"+noticePageNum).style.color="#fff";
 	</script>
 </body>
 </html>
