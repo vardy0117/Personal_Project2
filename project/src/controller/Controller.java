@@ -23,6 +23,8 @@ import comment.commentBean;
 import comment.commentDAO;
 import member.MemberBean;
 import member.MemberDAO;
+import notice.NoticeBean;
+import notice.NoticeDAO;
 
 @WebServlet("*.do")
 public class Controller extends HttpServlet {
@@ -82,6 +84,72 @@ public class Controller extends HttpServlet {
 			session.invalidate();
 			response.sendRedirect("index.jsp");
 		}
+		
+		// uri의 요청값이 myPage일 경우
+		if(uri.equals("myPage")) {
+			System.out.println("마이페이지");
+			String id = (String)session.getAttribute("id");
+			BoardDAO bDAO = new BoardDAO();
+			
+			// 페이징 처리
+			// 내가 작성한 게시글의 수
+			int count = bDAO.myBoardCount(id);
+			// 현재 페이지
+			String pageNum = request.getParameter("pageNum");
+			if(pageNum == null) {
+				pageNum = "1";
+			}
+			int currentPage = Integer.parseInt(pageNum);
+			// 한 페이지에 보여줄 게시글 수
+			int pageSize = 5;
+			// 해당 페이지에서 시작할 레코드번호 / 끝 번호
+			int startRow = (currentPage - 1) * pageSize + 1;
+			int endRow = currentPage *pageSize;
+			// 페이징 a태그 개수 구하기
+			int aTag = 0;
+			if(count%pageSize==0) {
+				aTag = count/pageSize;
+			}else {
+				aTag = (count/pageSize)+1;
+			}
+			ArrayList<BoardBean> boardList =  bDAO.allMyBoard(id,startRow,pageSize);
+			request.setAttribute("boardList", boardList);
+			request.setAttribute("startRow", startRow);
+			request.setAttribute("endRow", endRow);
+			request.setAttribute("aTag", aTag);
+			request.setAttribute("pageNum", Integer.parseInt(pageNum));
+			
+			// 내가 작성한 모든 댓글
+			commentDAO cDAO = new commentDAO();
+			// 내가 작성한 모든 댓글 수 
+			int commentCount = cDAO.myCommentCount(id);
+			// 페이지 번호
+			int commentPage= Integer.parseInt(request.getParameter("commentPage")==null?"1":request.getParameter("commentPage"));
+			// 한 페이지당 보여줄 댓글 수
+			int commentPageSize = 5;
+			// 해당 페이지에서 시작할 레코드번호 / 끝 번호
+			int commentStartRow = (commentPage - 1) * commentPageSize + 1;
+			int commentEndRow = commentPage *commentPageSize;
+			// 페이징 a태그 개수 구하기
+			int commentAtag = 0;
+			if(commentCount%commentPageSize==0) {
+				commentAtag = commentCount/commentPageSize;
+			}else {
+				commentAtag = (commentCount/commentPageSize)+1;
+			}
+			
+			ArrayList<commentBean> commentList = cDAO.myAllComment(id,commentStartRow,commentPageSize);
+			request.setAttribute("commentList", commentList);
+			request.setAttribute("commentPage", commentPage);
+			request.setAttribute("commentStartRow", commentStartRow);
+			request.setAttribute("commentEndRowd", commentEndRow);
+			request.setAttribute("commentAtag", commentAtag);
+			
+			forward = new ActionForward();
+			forward.setNextPath("myPage.jsp");
+			forward.setRedirect(false);
+			forward.execute(request, response);
+		}// myPage 끝
 		
 		// uri의 요청주소값이 join일 경우	(index화면에서 회원가입화면으로 이동)
 		if(uri.equals("join")) {
@@ -259,6 +327,100 @@ public class Controller extends HttpServlet {
 			forward.setNextPath("board.jsp");
 			forward.execute(request, response);
 		} // board 
+		
+		// 공지사항 클릭했을때 이동되는 페이지
+		if(uri.equals("notice")) {
+			
+			// 모든 공지글을 보여줘야 함
+			
+			NoticeDAO nDAO = new NoticeDAO();
+			// 공지글의 수
+			int noticeCount = nDAO.noticeCount();
+			// 현재 페이지 (null이면 1페이지)
+			int currentPage = Integer.parseInt(request.getParameter("noticePageNum")==null?"1":request.getParameter("noticePageNum"));
+			// 한 페이지에 보여줄 공지글 수
+			int pageSize = 5;
+			// 시작 번호
+			int startRow = (currentPage - 1) * pageSize + 1;
+			ArrayList<NoticeBean> noticeList = nDAO.allNotice(startRow);
+			
+			request.setAttribute("noticeList", noticeList);
+			request.setAttribute("noticePageNum", currentPage);
+			forward = new ActionForward();
+			forward.setNextPath("notice.jsp");
+			forward.execute(request, response);
+		}// notice
+		
+		// 공지글 하나를 클릭했을때 noticeDetail로 이동된다
+		if(uri.equals("noticeDetail")) {
+			int nno = Integer.parseInt(request.getParameter("nno"));
+			int noticePageNum = Integer.parseInt(request.getParameter("noticePageNum"));
+			
+			forward = new ActionForward();
+			forward.setNextPath("noticeDetail.jsp?nno="+nno+"&noticePageNum="+noticePageNum);
+			forward.execute(request, response);
+		}
+		
+		// 공지사항 글쓰기 버튼 클릭했을때 이동되는 페이지
+		if(uri.equals("noticeWrite")) {
+			forward = new ActionForward();
+			forward.setNextPath("noticeWrite.jsp");
+			forward.execute(request, response);
+		}// noticeWrite 끝
+		
+		// 공지사항 글쓰기 DB에 INSERT작업
+		if(uri.equals("noticeWriteUpload")) {
+			// 파일 업로드
+			request.setCharacterEncoding("utf-8");
+			//String uploadPath = getServletContext().getRealPath("upload");
+			String uploadPath = "/Users/leetaewoo/git/repository/project/WebContent/noticeUpload";
+			System.out.println(uploadPath);
+			int maxSize = 1024 * 1024 * 1000; 
+			try {
+				MultipartRequest multi = new MultipartRequest(request, uploadPath,maxSize,"utf-8",new DefaultFileRenamePolicy());
+				String id = multi.getParameter("writer");
+				String title = multi.getParameter("title");
+				String content = multi.getParameter("content");
+				String file = multi.getFilesystemName("file");
+				
+				System.out.println(id+","+title+","+content+","+file);
+				NoticeBean nBean = new NoticeBean();
+				NoticeDAO nDAO = new NoticeDAO();
+				System.out.println("글 작성 후 DB에 업로드한다");
+				nBean.setWriter(id);
+				nBean.setTitle(title);
+				nBean.setContent(content);
+				nBean.setFile(file);
+				int result = 0;
+				result = nDAO.insertNotice(nBean);
+				// 게시글 등록이 정상적으로 완료된 경우!!!
+				if(result == 1) {
+					request.setCharacterEncoding("utf-8");
+					response.setContentType("text/html; charset=UTF-8");
+					PrintWriter out = response.getWriter();
+					out.print("<script>alert('게시글이 등록되었습니다.'); location.href='notice.do';</script>");
+					out.flush();
+				}
+			} catch (Exception e) {
+				System.out.println("noticeWriteUpload() 내에서 예외 발생 : "+e.toString());
+			}
+		}// noticeWriteUpload 끝
+		
+		
+		
+		//자료실 클릭했을때 이동되는 페이지
+		if(uri.equals("download")) {
+			forward = new ActionForward();
+			forward.setNextPath("download.jsp");
+			forward.execute(request, response);
+		}
+		
+		// 유튜브 클릭했을때 이동되는 페이지
+		if(uri.equals("youtube")) {
+			forward = new ActionForward();
+			forward.setNextPath("youtube.jsp");
+			forward.execute(request, response);
+		}
 		
 		
 		

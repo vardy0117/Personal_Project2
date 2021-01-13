@@ -38,7 +38,7 @@
 		</script>
 	</c:if>
 	<a class="logo" href="index.jsp">To Be a Better Programmer</a>
-	<div class="id" style="float: right;">${sessionScope.id }님이 접속중 | <span><a href="logout.do">LOGOUT</a></span></div>
+	<div class="id" style="float: right;">${sessionScope.id }님이 접속중 | <span><a href="logout.do">LOGOUT</a></span> | <span><a href="myPage.do">MYPAGE</a></span></div>
 	<hr>
 	<table class="table">
 		<tr>

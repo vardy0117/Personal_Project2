@@ -56,6 +56,25 @@ public class BoardDAO {
 		return count;
 	}// allBoardCount() 끝 
 	
+	// 내가 작성한 게시글의 수
+		public int myBoardCount(String id) {
+			int count = 0;
+			try {
+				getConnection();
+				sql = "select count(*) from board where writer=?";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, id);
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					count = rs.getInt(1);
+				}
+			} catch (Exception e) {
+				System.out.println("myBoardCount() 내부에서 예외 발생 : "+e.toString());
+			} finally {
+				resourceClose();
+			}
+			return count;
+		}// myBoardCount() 끝 
 	
 	// 모든 게시글을 보여주는 작업
 	public ArrayList<BoardBean> allBoard(int startRow,int pageSize){
@@ -81,6 +100,30 @@ public class BoardDAO {
 		
 		return list;
 	}// allBoard() 끝
+	
+	// 내가 작성한 모든 게시글을 보여주는 작업
+	public ArrayList<BoardBean> allMyBoard(String id,int startRow,int pageSize){
+		ArrayList<BoardBean> list = new ArrayList<BoardBean>();
+		try {
+			getConnection();
+			sql="select * from board where writer=? order by bno desc limit ?,?";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.setInt(2, startRow-1);
+			pstmt.setInt(3, pageSize);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				BoardBean bBean = new BoardBean(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(6), rs.getDate(7));
+				list.add(bBean);
+			}
+		} catch (Exception e) {
+			System.out.println("allMyBoard() 내부에서 예외발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		
+		return list;
+	}// allMyBoard() 끝
 	
 	
 	// 게시글을 작성후 DB에 INSERT하는 작업
@@ -175,7 +218,29 @@ public class BoardDAO {
 		return result;
 	}// updateBoard() 끝
 
-	
+	// 나의 Board를 보여주는 메소드
+	public ArrayList<BoardBean> myBoard(String id) {
+		ArrayList<BoardBean> list = new ArrayList<BoardBean>();
+		BoardBean bBean =null;
+		try {
+			getConnection();
+			sql="select * from board where writer=? order by date desc limit 0,5";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				bBean = new BoardBean(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getDate(7));
+				list.add(bBean);
+			}
+		} catch (Exception e) {
+			System.out.println("myBoard() 내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		
+		return list;
+	}// myBoard() 끝
+
 	
 	
 	

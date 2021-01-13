@@ -69,10 +69,10 @@
 	<div class="id" style="float: right;">${sessionScope.id }님이 접속중 | <span><a href="logout.do">LOGOUT</a></span> | <span><a href="myPage.do">MYPAGE</a></span></div>
 	<hr>
 	<ul class="boardList">
-		<li><a href="board.do" id="board" class="clicked">일반게시판</a></li>
+		<li><a href="board.do" id="board">일반게시판</a></li>
 		<li><a href="notice.do" id="notice">공지사항</a></li>
 		<li><a href="download.do" id="download">자료실</a></li>
-		<li><a href="youtube.do" id="youtube">유튜브</a></li>
+		<li><a href="youtube.do" id="youtube" class="clicked">유튜브</a></li>
 	</ul>
 	
 	

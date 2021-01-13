@@ -94,6 +94,50 @@ public class commentDAO {
 		}
 		return result;
 	}// uploadComment() 끝
+
+	// 내가 작성한 모든 댓글을 보여주는 메소드
+	public ArrayList<commentBean> myAllComment(String id,int commentStartRow,int commentPageSize) {
+		ArrayList<commentBean> commentList = new ArrayList<commentBean>();
+		commentBean cBean = null;
+		try {
+			getConnection();
+			sql="select * from comment where writer=? order by date desc limit ?,?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.setInt(2,commentStartRow-1);
+			pstmt.setInt(3, commentPageSize);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				cBean = new commentBean(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getInt(5));
+				commentList.add(cBean);
+			}
+		} catch (Exception e) {
+			System.out.println("myAllComment()내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		return commentList;
+	}
+
+	// 내가 작성한 모든 댓글의 수
+	public int myCommentCount(String id) {
+		int count = 0;
+		try {
+			getConnection();
+			sql="select count(*) from comment where writer=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				count = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			System.out.println("myCommentCount() 내부에서 예외 발생 : "+e.toString());
+		} finally {
+			resourceClose();
+		}
+		return count;
+	}
 	
 	
 }// class
