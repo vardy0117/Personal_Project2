@@ -51,7 +51,7 @@
 		</tr>
 		<tr>
 			<th>작성자</th>
-			<td>${requestScope.nBean.writer }</td>
+			<td>관리자</td>
 		</tr>
 		<tr>
 			<th>글 제목</th>

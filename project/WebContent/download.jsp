@@ -75,56 +75,13 @@
 		<li><a href="youtube.do" id="youtube">유튜브</a></li>
 	</ul>
 	
-	
-	
-	
-	
-	
-	
-	<!-- 본문 작업 -->
-	<table class="table table-hover" style="margin-top: 1em;">
-		<thead>
-			<tr>
-				<th>번호</th>
-				<th>제목</th>
-				<th>작성자</th>
-				<th>날짜</th>
-				<th>조회수</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach items="${boardList }" var="boardList" varStatus="i">
-			<tr onclick="location.href='boardDetail.do?bno=${boardList.bno}&pageNum=${requestScope.pageNum }'">
-				<td>${boardList.bno }</td>
-				<td>${boardList.title }</td>
-				<td>${boardList.writer }</td>
-				<td>${boardList.date }</td>
-				<td>${boardList.read_count }</td>
-			</tr>
-			</c:forEach>
-		</tbody>
-	</table>
-	<div align="center" class="aTag">
-		<a href="board.do?pageNum=1">[처음]</a>
-		<c:if test="${pageNum ne 1 }">
-			<a href="board.do?pageNum=${pageNum-1 }">[이전]</a>
-		</c:if>
-		<c:forEach var="i" begin="1" end="${aTag }">
-			<a href="board.do?pageNum=${i }" id="nowPage${i }">${i }</a>
-<%-- 			<a class=" <c:if test='i eq pageNum'>currentPage</c:if>" href="board.do?pageNum=${i }" id="nowPage${i }">${i }</a> --%>
-		</c:forEach>
-		<c:if test="${pageNum ne aTag }">
-			<a href="board.do?pageNum=${pageNum+1 }">[다음]</a>
-		</c:if>
-		<a href="board.do?pageNum=${aTag}">[끝]</a>
+	<div>
+		
 	</div>
-	<hr>
-	<a class="btn" style="border: 1px solid; background: #1d809f; border-color: #1d809f; color: #fff;" href="write.do">글쓰기</a>
 	
-	<script type="text/javascript">
-		var pageNum = ${pageNum};
-		document.getElementById("nowPage"+pageNum).style.background="black";
-		document.getElementById("nowPage"+pageNum).style.color="#fff";
-	</script>
+	<c:if test="${sessionScope.id eq 'admin' }">
+		<a class="btn" style="border: 1px solid; background: #1d809f; border-color: #1d809f; color: #fff;" href="write.do">자료업로드</a>
+	</c:if>
+	
 </body>
 </html>

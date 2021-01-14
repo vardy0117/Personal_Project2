@@ -88,7 +88,7 @@
 		<tbody>
 			<c:forEach items="${noticeList }" var="noticeList">
 				<tr onclick="location.href='noticeDetail.do?nno=${noticeList.nno}&noticePageNum=${requestScope.noticePageNum }'">
-					<td>${noticeList.nno }</td>
+					<td style="border: 1px solid red; background: red; color: #fff; width: 100px;">공지사항</td>
 					<td style="color: blue;">${noticeList.title }</td>
 					<td>관리자</td>
 					<td>${noticeList.date }</td>

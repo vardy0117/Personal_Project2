@@ -62,8 +62,8 @@ public class Controller extends HttpServlet {
 			// 로그인 성공 
 			if(result == 1) {
 				System.out.println("로그인 성공 ");
-				
 				session.setAttribute("id", id);	//session에 id를 저장
+				
 				
 				forward = new ActionForward();
 				forward.setRedirect(false);
