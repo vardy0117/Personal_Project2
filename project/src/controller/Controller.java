@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
@@ -418,10 +424,44 @@ public class Controller extends HttpServlet {
 		
 		
 		
-		//자료실 클릭했을때 이동되는 페이지
-		if(uri.equals("download")) {
+		// 코로나 현황 클릭했을때 이동되는 페이지 ( 크롤링 )
+		if(uri.equals("covid")) {
+			// 	jsoup을 이용해 부산 코로나 현황 크롤링
+			// 전체 주소
+			String url = "https://www.busan.go.kr/covid19/Corona19.do";
+			// doc에는 전체 페이지 데이터가 담김
+			Document doc = null;
+			try {
+				doc = Jsoup.connect(url).get();
+			} catch (Exception e) {
+				System.out.println("Controller -covid 에서 예외 발생 : "+e.toString());
+			}
+			//select를 이용하여 원하는 태그를 선택한다. select는 원하는 값을 가져오기 위한 중요한 기능이다.
+	        //                               ==>원하는 값들이 들어있는 덩어리를 가져온다
+			//Elements nameElements = doc.select("div.covid-state-table").first().select("th");
+			//Elements valueElements = doc.select("div.covid-state-table").first().select("td");
+			Elements nameElements = doc.select("div.covid-state-table table").first().select("th");
+			Elements valueElements = doc.select("div.covid-state-table table").first().select("td");
+
+			ArrayList<String> locationList = new ArrayList<String>();
+			ArrayList<Integer> todayList = new ArrayList<Integer>();
+			ArrayList<Integer> allList = new ArrayList<Integer>();
+
+			int elementsLength = nameElements.size();
+		
+			System.out.println("-----------------------------------");
+			for(int i=1; i<nameElements.size(); i++) {
+				   System.out.println(nameElements.get(0).text() + " : " + nameElements.get(i).text());
+				   System.out.println(valueElements.get(0).text() + " : " + valueElements.get(i).text());
+				   System.out.println(valueElements.get(elementsLength).text() + " : " + valueElements.get(elementsLength + i).text());
+				   locationList.add(nameElements.get(i).text());
+				   todayList.add(valueElements.get(i).text().equals("-") ? 0 : Integer.parseInt(valueElements.get(i).text()));
+				   allList.add(valueElements.get(elementsLength + i).text().equals("-") ? 0 : Integer.parseInt(valueElements.get(elementsLength + i).text()));
+				}
+			System.out.println("-----------------------------------");
+			
 			forward = new ActionForward();
-			forward.setNextPath("download.jsp");
+			forward.setNextPath("covid.jsp");
 			forward.execute(request, response);
 		}
 		

@@ -71,17 +71,11 @@
 	<ul class="boardList">
 		<li><a href="board.do" id="board">자유게시판</a></li>
 		<li><a href="notice.do" id="notice">공지사항</a></li>
-		<li><a href="download.do" id="download" class="clicked">자료실</a></li>
+		<li><a href="covid.do" id="covid" class="clicked">코로나 현황</a></li>
 		<li><a href="youtube.do" id="youtube">유튜브</a></li>
 	</ul>
 	
-	<div>
-		
-	</div>
 	
-	<c:if test="${sessionScope.id eq 'admin' }">
-		<a class="btn" style="border: 1px solid; background: #1d809f; border-color: #1d809f; color: #fff;" href="write.do">자료업로드</a>
-	</c:if>
 	
 </body>
 </html>

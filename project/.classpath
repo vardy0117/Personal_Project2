@@ -18,5 +18,6 @@
 	<classpathentry kind="lib" path="/Users/leetaewoo/Desktop/MySQL 커넥션 관련/commons-dbcp2-2.1.1.jar"/>
 	<classpathentry kind="lib" path="/Users/leetaewoo/Desktop/MySQL 커넥션 관련/commons-collections4-4.1.jar"/>
 	<classpathentry kind="lib" path="/Users/leetaewoo/Desktop/MySQL 커넥션 관련/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49-bin.jar"/>
+	<classpathentry kind="lib" path="/Users/leetaewoo/Desktop/jsoup-1.13.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
