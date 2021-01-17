@@ -459,7 +459,9 @@ public class Controller extends HttpServlet {
 				   allList.add(valueElements.get(elementsLength + i).text().equals("-") ? 0 : Integer.parseInt(valueElements.get(elementsLength + i).text()));
 				}
 			System.out.println("-----------------------------------");
-			
+			request.setAttribute("todayList", todayList);
+			request.setAttribute("locationList", locationList);
+			request.setAttribute("allList", allList);
 			forward = new ActionForward();
 			forward.setNextPath("covid.jsp");
 			forward.execute(request, response);

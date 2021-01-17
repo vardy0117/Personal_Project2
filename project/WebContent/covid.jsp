@@ -75,7 +75,27 @@
 		<li><a href="youtube.do" id="youtube">유튜브</a></li>
 	</ul>
 	
-	
+	<table class="table">
+		<tr style="background: #f5f5f5;">
+			<td>지역</td>
+			<c:forEach items="${locationList }" var="locationList">
+				<td>${locationList }</td>
+			</c:forEach>
+		</tr>
+		<tr style="color: #01366E;">
+			<td>금일</td>
+			<c:forEach items="${todayList }" var="todayList">
+				<td>${todayList }</td>
+			</c:forEach>
+		</tr>
+		<tr>
+			<td>누적</td>
+			<c:forEach items="${allList }" var="allList">
+				<td>${allList }</td>
+			</c:forEach>
+		</tr>
+	</table>
+	<img alt="covid-19" src="img/covid.png">
 	
 </body>
 </html>

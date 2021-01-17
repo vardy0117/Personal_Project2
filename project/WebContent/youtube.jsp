@@ -74,7 +74,7 @@
 		<li><a href="covid.do" id="covid">코로나 현황</a></li>
 		<li><a href="youtube.do" id="youtube" class="clicked">유튜브</a></li>
 	</ul>
-	
+	<iframe width="853" height="480" src="https://www.youtube.com/embed/oGcg-kwDhtc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 	
 	
 	
