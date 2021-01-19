@@ -69,7 +69,11 @@ public class Controller extends HttpServlet {
 			if(result == 1) {
 				System.out.println("로그인 성공 ");
 				session.setAttribute("id", id);	//session에 id를 저장
-				
+	
+				// 관리자는 세션 시간 무제한
+				if(id.equals("admin")) {
+					session.setMaxInactiveInterval(-1);
+				}
 				
 				forward = new ActionForward();
 				forward.setRedirect(false);
@@ -175,6 +179,16 @@ public class Controller extends HttpServlet {
 			String rePwd = request.getParameter("rePwd");
 			String name = request.getParameter("name");
 			String phone = request.getParameter("phone");
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			// 모든 값 공백 방지
+			for(int i =0;i<id.length();i++) {
+				if(id.charAt(i)==' ') {
+					out.print("<script>alert('ID에 공백이 포함 될 수 없습니다.'); history.back();</script>");
+					out.flush();
+					return;
+				}
+			}
 			
 			// 비밀번호 맞게 입력했는지 확인
 			if(pwd.equals(rePwd)) {
@@ -191,8 +205,6 @@ public class Controller extends HttpServlet {
 					System.out.println("회원가입 실패!!!!!!!");
 				}
 			}else {
-				response.setContentType("text/html; charset=UTF-8");
-				PrintWriter out = response.getWriter();
 				out.print("<script>alert('비밀번호를 다시 확인하세요'); history.back();</script>");
 				out.flush();
 			}
@@ -466,15 +478,6 @@ public class Controller extends HttpServlet {
 			forward.setNextPath("covid.jsp");
 			forward.execute(request, response);
 		}
-		
-		// 유튜브 클릭했을때 이동되는 페이지
-		if(uri.equals("youtube")) {
-			forward = new ActionForward();
-			forward.setNextPath("youtube.jsp");
-			forward.execute(request, response);
-		}
-		
-		
 		
 		// 글쓰기 버튼을 클릭했을때 이동되는 페이지 (글을 작성할 수 있는 페이지)
 		if(uri.equals("write")) {

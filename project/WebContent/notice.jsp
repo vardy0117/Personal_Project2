@@ -41,7 +41,7 @@
 	}
 	.boardList li{
 		float: left;
-		width: 25%;
+		width: 33%;
 		height: 100%;
 		line-height: 50px;
 		text-align: center;
@@ -72,7 +72,6 @@
 		<li><a href="board.do" id="board">자유게시판</a></li>
 		<li><a href="notice.do" id="notice" class="clicked">공지사항</a></li>
 		<li><a href="covid.do" id="covid">코로나 현황</a></li>
-		<li><a href="youtube.do" id="youtube">유튜브</a></li>
 	</ul>
 	
 	<!-- 본문 작업 -->
